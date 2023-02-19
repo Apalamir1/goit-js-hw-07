@@ -5,7 +5,7 @@ import { galleryItems } from './gallery-items.js';
 const getGallery = document.querySelector('.gallery');
 
 const getGalleryItems = galleryItems.map(({ preview, original, description }) => {
-   console.log(preview);
+   // console.log(preview);
    return `<div class="gallery__item">
             <a class="gallery__link" href="${original}">
                <img
@@ -20,6 +20,7 @@ const getGalleryItems = galleryItems.map(({ preview, original, description }) =>
 getGallery.insertAdjacentHTML("afterbegin", getGalleryItems);
 getGallery.addEventListener('click', onParentClick);
 
+
 function onParentClick(evt) {
     evt.preventDefault();
 
@@ -28,18 +29,27 @@ function onParentClick(evt) {
     }
 
 
-const ligthBoxShow = basicLightbox.create(`
+   const ligthBoxShow = basicLightbox.create(`
 		<img src = '${evt.target.dataset.source}' alt = '${evt.target.alt}'/>
-	`);
+	`, {
 
+      
+      showing: () => {
+         document.addEventListener("keydown", closingImg);
+      },
+      closing: () => {
+         document.removeEventListener("keydown", closingImg);
+      }
+   }
+   );
    ligthBoxShow.show();
-
-   document.addEventListener("keydown", event => {
+   
+   function closingImg(event) {
       console.log(event.code);
-      if (event.code !== 'Escape') {
-         return;
-      };
-      ligthBoxShow.close();
-   });
+      if (event.code === 'Escape') {
+         ligthBoxShow.close();
+      }
+   };
+
+      
 };
-console.log(galleryItems);
